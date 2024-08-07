@@ -1,0 +1,152 @@
+import React, { useState } from 'react'
+import './loginSignup.css'
+import login_img from '../../assets/login_img.png'
+import signup_img from '../../assets/signup_img.png'
+import logo from '../../assets/logo.png'
+import icon_envelope from '../../assets/icon_envelope.png'
+import icon_eye from '../../assets/icon_eye.png'
+import { Box, Typography } from '@mui/material'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+
+
+const LoginSignup = () => {
+    const [passwordShown, setPasswordShown] = useState(false);
+    const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
+    const location = useLocation(); 
+    const [login, setLogin] = useState(location.state?.login ?? true)
+
+    const togglePasswordVisibility = () => {
+        setPasswordShown(!passwordShown);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setConfirmPasswordShown(!confirmPasswordShown);
+    };
+
+
+    const handleSignUpClick = () => {
+        if(login){
+            return setLogin(false);
+        }
+        setLogin(true);
+    };
+
+    const navigate = useNavigate();
+
+    const handleForgotPasswordClick = () => {
+        navigate("/forgot-password");
+    };
+
+    return (
+        !login ? (
+            <div className="login-signup">
+                <div className="login-signup-left">
+                    <div className='login-signup-heading'>
+                        <img src={logo} alt="" />
+                        <h1 style={{ fontFamily: 'Poppins', fontWeight: '700' }}>Budget Tracker</h1>
+                    </div>
+                    <div className="login-signup-form">
+                        <h1>Sign Up</h1>
+                        <p>Welcome to our community</p>
+                        <form>
+                            <div id='firstname-lastname' style={{ marginBottom: '14px' }}>
+                                <div>
+                                    <label style={{ fontSize: '16px', fontWeight: '400', fontFamily: 'Roboto' }}>First-Name</label>
+                                    <input type="text" placeholder="First Name" name="FirstName" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
+                                </div>
+                                <div>
+                                    <label style={{ fontSize: '16px', fontWeight: '400', fontFamily: 'Roboto' }}>Last-Name</label>
+                                    <input type="text" placeholder="Last Name" name="LastName" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
+                                </div>
+                            </div>
+                            <div>
+                                <label style={{ fontSize: '16px', fontWeight: '400', fontFamily: 'Roboto' }}>Email</label>
+                                <div className="icon-wrapper">
+                                    <input type="email" placeholder="test@gmail.com" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
+                                    <i className="fas fa-envelope input-icon"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <label style={{ fontSize: '16px', fontWeight: '400', fontFamily: 'Roboto' }}>Password</label>
+                                <div className="icon-wrapper">
+                                    <input type="password" placeholder="Enter your password" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
+                                    <i
+                                        className={`fas ${passwordShown ? 'fa-eye-slash' : 'fa-eye'} input-icon clickable`}
+                                        onClick={togglePasswordVisibility}
+                                    ></i>
+                                </div>
+                            </div>
+                            <div>
+                                <label style={{ fontSize: '16px', fontWeight: '400', fontFamily: 'Roboto' }}>Confirm-Password</label>
+                                <div className="icon-wrapper">
+                                    <input type="password" placeholder="Enter your password" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
+                                    <i
+                                        className={`fas ${confirmPasswordShown ? 'fa-eye-slash' : 'fa-eye'} input-icon clickable`}
+                                        onClick={toggleConfirmPasswordVisibility}
+                                    ></i>
+                                </div>
+                            </div>
+                            <div>
+                                <label style={{ fontSize: '16px', fontWeight: '400', fontFamily: 'Roboto' }}>Budget-Limit</label>
+                                <input type="Number" placeholder="Enter Amount" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
+                            </div>
+                            <button type="submit" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }}>SIGN UP</button>
+                            <p style={{ textAlign: 'center', fontSize: '16px', fontWeight: '400', fontFamily: 'Poppins', color: 'black', marginTop:'5px' }}>Already have an account? <span onClick={handleSignUpClick} style={{ fontWeight: '600', color: '#7539FF', cursor: 'pointer' }}>Log in</span> </p>
+                        </form>
+                    </div>
+                </div>
+                <div className="login-signup-right">
+                    <img src={signup_img} alt='' />
+                </div>
+            </div>
+        ) : (
+            <div className="login-signup">
+                <div className="login-signup-left">
+                    <div className='login-signup-heading'>
+                        <img src={logo} alt="" />
+                        <h1 style={{ fontFamily: 'Poppins', fontWeight: '700' }}>Budget Tracker</h1>
+                    </div>
+                    <div className="login-signup-form">
+                        <h1>Welcome Back!</h1>
+                        <p>Sign in to continue to Budget Tracker</p>
+                        <form>
+                            <div>
+                                <label style={{ fontSize: '16px', fontWeight: '400', fontFamily: 'Roboto' }}>Email</label>
+                                <div className="icon-wrapper">
+                                    <input type="email" placeholder="test@gmail.com" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
+                                    <i className="fas fa-envelope input-icon"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <label style={{ fontSize: '16px', fontWeight: '400', fontFamily: 'Roboto' }}>Password</label>
+                                <div className="icon-wrapper">
+                                    <input type="password" placeholder="Enter your password" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
+                                    <i
+                                        className={`fas ${passwordShown ? 'fa-eye-slash' : 'fa-eye'} input-icon clickable`}
+                                        onClick={togglePasswordVisibility}
+                                    ></i>
+                                </div>
+                            </div>
+                            <div className="remember-forgot-container">
+                                <div className="remember-me">
+                                    <input type="checkbox" id="rememberMe" />
+                                    <label htmlFor="rememberMe" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }}>Remember me</label>
+                                </div>
+                                <div className="forgot-password">
+                                <Link to="/forgot-password" className="link-text" onClick={handleForgotPasswordClick}>Forgot password?</Link>
+                                </div>
+                            </div>
+                            <button type="submit" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }}>LOG IN</button>
+                            <p style={{ textAlign: 'center', fontSize: '16px', fontWeight: '400', fontFamily: 'Poppins', color: 'black' , marginTop:'5px'}}>Dont't have an account? <span onClick={handleSignUpClick} style={{ fontWeight: '600', color: '#7539FF', cursor: 'pointer' }}>Sign Up</span> </p>
+                        </form>
+                    </div>
+                </div>
+                <div className="login-signup-right">
+                    <img src={login_img} alt='' />
+                </div>
+            </div>
+        )
+    )
+}
+
+export default LoginSignup
