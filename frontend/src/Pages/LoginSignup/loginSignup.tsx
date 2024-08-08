@@ -5,14 +5,86 @@ import signup_img from '../../assets/signup_img.png'
 import logo from '../../assets/logo.png'
 import icon_envelope from '../../assets/icon_envelope.png'
 import icon_eye from '../../assets/icon_eye.png'
-import { Box, Typography } from '@mui/material'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { login as loginAPI, signup as signupAPI } from '../../API-Base/api'
+import { response } from 'express'
 
 
 const LoginSignup = () => {
+    // 
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        budgetLimit: ''
+    });
+    const [message, setMessage] = useState('');
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSignupSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            const formDataWithNumberBudget = {
+                ...formData,
+                budgetLimit: Number(formData.budgetLimit), 
+            };
+    
+            const signupResponse = await signupAPI(formDataWithNumberBudget);
+    
+            if (signupResponse.success) {
+                setMessage(signupResponse.data.message);
+    
+                // Automatically log in the user after successful signup
+                const loginResponse = await loginAPI({ email: formData.email, password: formData.password });
+    
+                if (loginResponse.success) {
+                    localStorage.setItem('authToken', loginResponse.token); // Save the auth token
+                    setMessage('Signup and login successful');
+                    // Redirect or navigate to the dashboard or another protected route
+                    // window.location.replace("/");
+                } else {
+                    alert(loginResponse.error); 
+                }
+            } else {
+                alert(signupResponse.error); 
+            }
+        } catch (error: any) {
+            alert(error.message || 'An unknown error occurred'); // Fallback error message
+        }
+    };
+    
+
+
+
+    const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            const response = await loginAPI({ email: formData.email, password: formData.password });
+
+            if (response.success) {
+                localStorage.setItem('auth-token', response.token);
+                // After successful login, redirect to homepage
+                // window.location.replace("/");
+            } else {
+                // Display error message creatively or with alert
+                alert(response.error);
+            }
+        } catch (error: any) {
+            alert(error.message || 'An unknown error occurred');
+        }
+    };
+
+
+    // 
+
     const [passwordShown, setPasswordShown] = useState(false);
     const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
-    const location = useLocation(); 
+    const location = useLocation();
     const [login, setLogin] = useState(location.state?.login ?? true)
 
     const togglePasswordVisibility = () => {
@@ -25,7 +97,7 @@ const LoginSignup = () => {
 
 
     const handleSignUpClick = () => {
-        if(login){
+        if (login) {
             return setLogin(false);
         }
         setLogin(true);
@@ -48,28 +120,28 @@ const LoginSignup = () => {
                     <div className="login-signup-form">
                         <h1>Sign Up</h1>
                         <p>Welcome to our community</p>
-                        <form>
+                        <form onSubmit={handleSignupSubmit}>
                             <div id='firstname-lastname' style={{ marginBottom: '14px' }}>
                                 <div>
                                     <label style={{ fontSize: '16px', fontWeight: '400', fontFamily: 'Roboto' }}>First-Name</label>
-                                    <input type="text" placeholder="First Name" name="FirstName" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
+                                    <input type="text" placeholder="First Name" name="firstName" value={formData.firstName} onChange={handleChange} style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
                                 </div>
                                 <div>
                                     <label style={{ fontSize: '16px', fontWeight: '400', fontFamily: 'Roboto' }}>Last-Name</label>
-                                    <input type="text" placeholder="Last Name" name="LastName" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
+                                    <input type="text" placeholder="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
                                 </div>
                             </div>
                             <div>
                                 <label style={{ fontSize: '16px', fontWeight: '400', fontFamily: 'Roboto' }}>Email</label>
                                 <div className="icon-wrapper">
-                                    <input type="email" placeholder="test@gmail.com" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
+                                    <input type="email" placeholder="test@gmail.com" name='email' value={formData.email} onChange={handleChange} style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
                                     <i className="fas fa-envelope input-icon"></i>
                                 </div>
                             </div>
                             <div>
                                 <label style={{ fontSize: '16px', fontWeight: '400', fontFamily: 'Roboto' }}>Password</label>
                                 <div className="icon-wrapper">
-                                    <input type="password" placeholder="Enter your password" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
+                                    <input type={passwordShown ? 'text' : "password"} placeholder="Enter your password" name='password' value={formData.password} onChange={handleChange} style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
                                     <i
                                         className={`fas ${passwordShown ? 'fa-eye-slash' : 'fa-eye'} input-icon clickable`}
                                         onClick={togglePasswordVisibility}
@@ -79,7 +151,7 @@ const LoginSignup = () => {
                             <div>
                                 <label style={{ fontSize: '16px', fontWeight: '400', fontFamily: 'Roboto' }}>Confirm-Password</label>
                                 <div className="icon-wrapper">
-                                    <input type="password" placeholder="Enter your password" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
+                                    <input type={confirmPasswordShown ? 'text' : "password"} placeholder="Enter your password" name='confirmPassword' value={formData.confirmPassword} onChange={handleChange} style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
                                     <i
                                         className={`fas ${confirmPasswordShown ? 'fa-eye-slash' : 'fa-eye'} input-icon clickable`}
                                         onClick={toggleConfirmPasswordVisibility}
@@ -88,10 +160,10 @@ const LoginSignup = () => {
                             </div>
                             <div>
                                 <label style={{ fontSize: '16px', fontWeight: '400', fontFamily: 'Roboto' }}>Budget-Limit</label>
-                                <input type="Number" placeholder="Enter Amount" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
+                                <input type="Number" placeholder="Enter Amount" name='budgetLimit' value={formData.budgetLimit} onChange={handleChange} style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
                             </div>
                             <button type="submit" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }}>SIGN UP</button>
-                            <p style={{ textAlign: 'center', fontSize: '16px', fontWeight: '400', fontFamily: 'Poppins', color: 'black', marginTop:'5px' }}>Already have an account? <span onClick={handleSignUpClick} style={{ fontWeight: '600', color: '#7539FF', cursor: 'pointer' }}>Log in</span> </p>
+                            <p style={{ textAlign: 'center', fontSize: '16px', fontWeight: '400', fontFamily: 'Poppins', color: 'black', marginTop: '5px' }}>Already have an account? <span onClick={handleSignUpClick} style={{ fontWeight: '600', color: '#7539FF', cursor: 'pointer' }}>Log in</span> </p>
                         </form>
                     </div>
                 </div>
@@ -109,18 +181,18 @@ const LoginSignup = () => {
                     <div className="login-signup-form">
                         <h1>Welcome Back!</h1>
                         <p>Sign in to continue to Budget Tracker</p>
-                        <form>
+                        <form onSubmit={handleLoginSubmit}>
                             <div>
                                 <label style={{ fontSize: '16px', fontWeight: '400', fontFamily: 'Roboto' }}>Email</label>
                                 <div className="icon-wrapper">
-                                    <input type="email" placeholder="test@gmail.com" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
+                                    <input type="email" placeholder="test@gmail.com" name='email' value={formData.email} onChange={handleChange} style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
                                     <i className="fas fa-envelope input-icon"></i>
                                 </div>
                             </div>
                             <div>
                                 <label style={{ fontSize: '16px', fontWeight: '400', fontFamily: 'Roboto' }}>Password</label>
                                 <div className="icon-wrapper">
-                                    <input type="password" placeholder="Enter your password" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
+                                    <input type={passwordShown ? 'text' : "password"} name='password' value={formData.password} onChange={handleChange} placeholder="Enter your password" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }} />
                                     <i
                                         className={`fas ${passwordShown ? 'fa-eye-slash' : 'fa-eye'} input-icon clickable`}
                                         onClick={togglePasswordVisibility}
@@ -133,11 +205,11 @@ const LoginSignup = () => {
                                     <label htmlFor="rememberMe" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }}>Remember me</label>
                                 </div>
                                 <div className="forgot-password">
-                                <Link to="/forgot-password" className="link-text" onClick={handleForgotPasswordClick}>Forgot password?</Link>
+                                    <Link to="/forgot-password" className="link-text" onClick={handleForgotPasswordClick}>Forgot password?</Link>
                                 </div>
                             </div>
                             <button type="submit" style={{ fontSize: '14px', fontWeight: '400', fontFamily: 'Poppins' }}>LOG IN</button>
-                            <p style={{ textAlign: 'center', fontSize: '16px', fontWeight: '400', fontFamily: 'Poppins', color: 'black' , marginTop:'5px'}}>Dont't have an account? <span onClick={handleSignUpClick} style={{ fontWeight: '600', color: '#7539FF', cursor: 'pointer' }}>Sign Up</span> </p>
+                            <p style={{ textAlign: 'center', fontSize: '16px', fontWeight: '400', fontFamily: 'Poppins', color: 'black', marginTop: '5px' }}>Dont't have an account? <span onClick={handleSignUpClick} style={{ fontWeight: '600', color: '#7539FF', cursor: 'pointer' }}>Sign Up</span> </p>
                         </form>
                     </div>
                 </div>
