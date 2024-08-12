@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
-const mongoURI = 'mongodb+srv://ibrahimzia:budgettracker@cluster0.ji55m.mongodb.net/';
+import dotenv from 'dotenv';
 
+dotenv.config();
 export async function connectDB() {
   try {
     console.log('Attempting to connect to MongoDB...');
-    await mongoose.connect(mongoURI);
+    console.log(process.env.MONGOURI);
+    await mongoose.connect(process.env.MONGOURI);
     console.log('MongoDB connected successfully');
   } catch (err) {
     console.error('MongoDB connection error:', err);
