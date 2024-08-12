@@ -1,8 +1,8 @@
 import React from 'react'
 import './forgotPassword.css'
-import '../../Pages/LoginSignup/loginSignup'
-import logo from '../../assets/logo.png'
-import forgot_pass from '../../assets/forgot_pass.png'
+import '../../../Pages/LoginSignup/loginSignup'
+import logo from '../../../assets/logo.png'
+import forgot_pass from '../../../assets/forgot_pass.png'
 import { Link } from 'react-router-dom'
 
 const ForgotPassword = () => {

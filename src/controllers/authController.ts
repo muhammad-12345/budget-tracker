@@ -3,6 +3,22 @@ import User from '../models/userModel';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
+import createTransporter from './mailer';
+
+
+// async function updateSchema() {
+//   try {
+//       // Add default values for new fields
+//       await User.updateMany(
+//           { resetPasswordOtp: { $exists: false } },
+//           { $set: { resetPasswordOtp: null, resetPasswordOtpExpiry: null } }
+//       );
+
+//       console.log('Schema updated successfully');
+//   } catch (error) {
+//       console.error('Error updating schema:', error);
+//   }
+// }
 
 // Signup endpoint
 //creates user
@@ -50,26 +66,22 @@ export const forgotPassword = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email });
-    //cehck if user exists
+
     if (!user) {
       return res.status(404).json({ message: 'Email not found' });
     }
 
-    //one time ppin generated 6-digit
+    // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    user.resetPasswordOtp = otp;
+    user.resetPasswordOtpExpiry = new Date(Date.now() + 15 * 60 * 1000);
+    await user.save();
 
-    // Configure NodeMailer
-    const transporter = nodemailer.createTransport({
-      service: 'Gmail',
-      auth: {
-        user: 'mibrahimzia@gmail.com',
-        pass: '***********',
-      },
-    });
+    const transporter = await createTransporter();
 
     // Email options
     const mailOptions = {
-      from: 'mibrahimzia@gmail.com',
+      from: 'your-email@gmail.com',
       to: user.email,
       subject: 'Password Reset OTP',
       text: `Your OTP for password reset is: ${otp}`,
@@ -77,14 +89,14 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
     // Send email
     transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error('Error sending email:', error);
-            return res.status(500).json({ message: 'Error sending email', error: error.message });
-          } else {
-            console.log('Email sent:', info.response);
-            return res.json({ message: 'OTP sent successfully' });
-          }
-        });
+      if (error) {
+        console.error('Error sending email:', error);
+        return res.status(500).json({ message: 'Error sending email', error: error.message });
+      } else {
+        console.log('Email sent:', info.response);
+        return res.json({ message: 'OTP sent successfully' });
+      }
+    });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }

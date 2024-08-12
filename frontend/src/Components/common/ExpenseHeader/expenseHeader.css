@@ -1,0 +1,17 @@
+.expense-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 10px;
+    font-family: 'Poppins';
+    font-weight: 600;
+}
+
+.expense-header button{
+    background: #7539FF;
+
+}
+
+.expense-header h1{
+    font-size: 32px;
+}

@@ -7,6 +7,8 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   budgetLimit: { type: Number, required: true },
+  resetPasswordOtp: {type: String},
+  resetPasswordOtpExpiry: {type: Date},
 });
 
 const User = mongoose.model('User', UserSchema);

@@ -46,7 +46,7 @@ const LoginSignup = () => {
                     localStorage.setItem('authToken', loginResponse.token); // Save the auth token
                     setMessage('Signup and login successful');
                     // Redirect or navigate to the dashboard or another protected route
-                    // window.location.replace("/");
+                    window.location.replace("/expenses");
                 } else {
                     alert(loginResponse.error); 
                 }
@@ -69,7 +69,7 @@ const LoginSignup = () => {
             if (response.success) {
                 localStorage.setItem('auth-token', response.token);
                 // After successful login, redirect to homepage
-                // window.location.replace("/");
+                window.location.replace("/expenses");
             } else {
                 // Display error message creatively or with alert
                 alert(response.error);
