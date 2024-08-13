@@ -3,6 +3,7 @@ import Navbar from '../Components/common/NavBar/navBar';
 import LoginSignup from '../Pages/LoginSignup/loginSignup';
 import ForgotPassword from '../Components/feature/ForgotPassword/forgotPassword'; 
 import Expenses from '../Pages/Expenses/expenses';
+import Analysis from '../Pages/Analysis/Analysis'
 import '../styles.css'
 
 export function App() {
@@ -15,6 +16,7 @@ export function App() {
             <Route path="/" element={<LoginSignup />} />
             <Route path="/login-signup" element={<LoginSignup />} />
             <Route path="/expenses" element={<Expenses />} />
+            <Route path="/analysis" element={<Analysis />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
           </Routes>
         </div>

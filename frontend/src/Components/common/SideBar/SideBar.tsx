@@ -1,30 +1,68 @@
 import React from 'react';
-import { Layout, Menu } from 'antd';
-import { UserOutlined, VideoCameraOutlined, UploadOutlined, LineChartOutlined, DollarOutlined, LogoutOutlined } from '@ant-design/icons';
-import logo from '../../../assets/logo.png'
+import { Layout, Menu, Modal } from 'antd';
+import { LineChartOutlined, DollarOutlined, LogoutOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom'; // For navigation
+import logo from '../../../assets/logo.png';
+
 
 const { Sider } = Layout;
 
 const Sidebar: React.FC<{ collapsed: boolean }> = ({ collapsed }) => {
+  const navigate = useNavigate();
+
+  // Function to handle menu item clicks
+  const handleMenuClick = ({ key }: { key: string }) => {
+    if (key === '1') {
+      navigate('/analysis'); // Navigate to the Analysis page
+    } else if (key === '2') {
+      navigate('/expenses'); // Navigate to the Expenses page
+    } else if (key === '3') {
+      showLogoutConfirmation(); // Show the logout confirmation modal
+    }
+  };
+
+  // Function to show the logout confirmation modal
+  const showLogoutConfirmation = () => {
+    Modal.confirm({
+      title: 'Confirm Logout',
+      content: 'Are you sure you want to logout?',
+      okText: 'Logout',
+      cancelText: 'Cancel',
+      onOk: () => {
+        // Handle the logout process here
+        console.log('Logged out');
+        navigate('/login-signup'); // Optionally navigate to the login page after logout
+      },
+    });
+  };
+
   return (
-    <Sider theme="light" trigger={null} collapsible collapsed={collapsed} style={{
-      height:'100vh'
-    }}>
+    <Sider
+      theme="light"
+      trigger={null}
+      collapsible
+      collapsed={collapsed}
+      style={{
+        height: '100vh',
+      }}
+    >
       <div className="demo-logo-vertical" />
-      <div style={{display:'flex'}}>
-      <img src={logo} alt="" style={{marginLeft:'9px', marginTop:'28px'}}/>
-      {!collapsed && (
+      <div style={{ display: 'flex' }}>
+        <img src={logo} alt="" style={{ marginLeft: '9px', marginTop: '28px' }} />
+        {!collapsed && (
           <div style={{ marginLeft: '16px', fontSize: '16px', fontWeight: 'bold' }}>
-            <p style={{marginTop:'28px', fontFamily:'Poppins'}}>Budget Tracker</p>
+            <p style={{ marginTop: '28px', fontFamily: 'Poppins' }}>Budget Tracker</p>
           </div>
         )}
       </div>
-      <Menu style={{
-        marginTop:'67px'
-      }}
+      <Menu
+        style={{
+          marginTop: '67px',
+        }}
         theme="light"
         mode="inline"
         defaultSelectedKeys={['2']}
+        onClick={handleMenuClick} // Handle menu clicks
         items={[
           {
             key: '1',

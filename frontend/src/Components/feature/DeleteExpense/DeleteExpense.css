@@ -1,0 +1,44 @@
+.delete-expense-modal .ant-modal {
+    border-radius: 8px;
+  }
+  
+  .delete-expense-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .delete-expense-form h2 {
+    margin-bottom: 16px;
+    font-family: 'Poppins';
+    font-size: 20px;
+    font-weight: 600;
+  }
+  
+  .form-fields {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-fields input {
+    margin-bottom: 10px;
+    font-weight: 600;
+  color: black !important;
+  }
+  
+  .form-buttons {
+    display: flex;
+    justify-content: center;
+  }
+
+  .form-buttons button{
+    width: 230px;
+  }
+  
+  .test .delete-btn{
+     background-color: red;
+  }
+
+  .delete-btn:hover{
+     background-color: darkred;
+  }
+  

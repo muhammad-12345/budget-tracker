@@ -2,3 +2,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Make the background less dark */
+.ant-modal-mask {
+    background-color: rgba(0, 0, 0, 0.2); /* Adjust the opacity here */
+  }
+  

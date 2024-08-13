@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import { connectDB } from './config/db';
 import authRoutes from './routes/authRoutes';
+import expenseRoutes from './routes/expenseRoutes';
 import cors from 'cors'
 
 const app = express();
@@ -17,6 +18,7 @@ app.use(cors({
 }));
 
 app.use('/auth', authRoutes);
+app.use('/expenses', expenseRoutes);
 
 //function call for DB connection
 const startServer = async () => {
