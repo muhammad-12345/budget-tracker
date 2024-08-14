@@ -6,28 +6,29 @@ import './DeleteExpense.css';
 
 
 interface ExpenseData {
-    key: string;
-    name: string;
-    total: number;
-    price: string;
-    date: string;
-    user: string;
-  }
-  
-  interface DeleteExpenseFormProps {
-    visible: boolean;
-    onClose: () => void;
-    expenseId: string; 
-    expenseData: ExpenseData;
-    onDelete: (id: string) => void;
-  }
+  key: string;
+  name: string;
+  total: number;
+  price: string;
+  date: string;
+  user: string;
+}
 
-const DeleteExpenseForm: React.FC<DeleteExpenseFormProps> = ({visible, onClose, expenseId, expenseData, onDelete  }) => {
-    const { name, price, date } = expenseData;
+interface DeleteExpenseFormProps {
+  visible: boolean;
+  onClose: () => void;
+  expenseId: string;
+  expenseData: ExpenseData;
+  onDelete: (id: string) => void;
+}
+
+const DeleteExpenseForm: React.FC<DeleteExpenseFormProps> = ({ visible, onClose, expenseId, expenseData, onDelete }) => {
+  const { name, price, date } = expenseData;
 
 
   const handleDelete = () => {
-    console.log({expenseId });
+    console.log({ expenseId });
+    onDelete(expenseId); 
     onClose(); 
   };
 

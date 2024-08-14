@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, Menu, Modal } from 'antd';
 import { LineChartOutlined, DollarOutlined, LogoutOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom'; // For navigation
+import { useNavigate } from 'react-router-dom'; 
 import logo from '../../../assets/logo.png';
 
 
@@ -17,11 +17,10 @@ const Sidebar: React.FC<{ collapsed: boolean }> = ({ collapsed }) => {
     } else if (key === '2') {
       navigate('/expenses'); // Navigate to the Expenses page
     } else if (key === '3') {
-      showLogoutConfirmation(); // Show the logout confirmation modal
+      showLogoutConfirmation(); 
     }
   };
 
-  // Function to show the logout confirmation modal
   const showLogoutConfirmation = () => {
     Modal.confirm({
       title: 'Confirm Logout',
@@ -29,9 +28,9 @@ const Sidebar: React.FC<{ collapsed: boolean }> = ({ collapsed }) => {
       okText: 'Logout',
       cancelText: 'Cancel',
       onOk: () => {
-        // Handle the logout process here
+        // Handle the logout process 
         console.log('Logged out');
-        navigate('/login-signup'); // Optionally navigate to the login page after logout
+        navigate('/login-signup'); 
       },
     });
   };

@@ -2,23 +2,40 @@ import React, { useState } from 'react';
 import { Button, Input, Modal } from 'antd';
 import './EditExpense.css';
 
-interface EditExpenseFormProps {
-  onClose: () => void;
+
+interface ExpenseData {
+  key: string;
+  name: string;
+  total: number;
+  price: string;
+  date: string;
+  user: string;
 }
 
-const EditExpenseForm: React.FC<EditExpenseFormProps> = ({ onClose }) => {
-  const [title, setTitle] = useState('');
-  const [price, setPrice] = useState('');
-  const [date, setDate] = useState('');
+interface EditExpenseFormProps {
+  visible: boolean;
+  onClose: () => void;
+  expenseId: string;
+  expenseData: ExpenseData | null;
+  onUpdate: (updatedData: any) => Promise<void>;
+}
 
-  const handleEdit = () => {
-    console.log({ title, price, date });
+
+
+const EditExpenseForm: React.FC<EditExpenseFormProps> = ({ visible, onClose, expenseId, expenseData, onUpdate }) => {
+  const [title, setTitle] = useState(expenseData?.name || '');
+  const [price, setPrice] = useState(expenseData?.price.toString() || '');
+  const [date, setDate] = useState(expenseData?.date || '');
+
+  const handleEdit = async () => {
+    const updatedData = { title, price, date };
+    await onUpdate(updatedData);
     onClose(); 
   };
 
   return (
     <Modal
-      visible={true}
+      visible={visible}
       onCancel={onClose}
       footer={null}
       className="edit-expense-modal"
@@ -28,7 +45,7 @@ const EditExpenseForm: React.FC<EditExpenseFormProps> = ({ onClose }) => {
       <div className="edit-expense-form">
         <h2>Edit Expense</h2>
         <div className="form-fields">
-          <label style={{fontFamily:'Poppins', fontWeight:'600'}}>Title</label>
+          <label style={{ fontFamily: 'Poppins', fontWeight: '600' }}>Title</label>
           <Input
             placeholder="Title"
             value={title}
@@ -37,30 +54,30 @@ const EditExpenseForm: React.FC<EditExpenseFormProps> = ({ onClose }) => {
           />
           <div style={{ display: 'flex', flexDirection: 'row', gap: '5px' }}>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <label style={{fontFamily:'Poppins', fontWeight:'600'}}>Price</label>
+              <label style={{ fontFamily: 'Poppins', fontWeight: '600' }}>Price</label>
               <Input
                 placeholder="Price"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                style={{ marginRight: '10px',width: '230px' }}
+                style={{ marginRight: '10px', width: '230px' }}
               />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <label style={{fontFamily:'Poppins', fontWeight:'600'}}>Date</label>
+              <label style={{ fontFamily: 'Poppins', fontWeight: '600' }}>Date</label>
               <Input
                 placeholder="Date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                style={{width: '230px'}}
+                style={{ width: '230px' }}
               />
             </div>
           </div>
         </div>
         <div className="form-buttons" style={{ display: 'flex', justifyContent: 'center', gap: '5px' }}>
-          <Button onClick={onClose} style={{fontFamily:'Poppins', fontWeight:'600', marginRight:'10px'}}>Cancel</Button>
-            <div className="test">
-          <Button className="update-btn" type="primary" onClick={handleEdit} style={{fontFamily:'Poppins', fontWeight:'600'}}>Save Changes</Button>
-            </div>
+          <Button onClick={onClose} style={{ fontFamily: 'Poppins', fontWeight: '600', marginRight: '10px' }}>Cancel</Button>
+          <div className="test">
+            <Button className="update-btn" type="primary" onClick={handleEdit} style={{ fontFamily: 'Poppins', fontWeight: '600' }}>Save Changes</Button>
+          </div>
         </div>
       </div>
     </Modal>

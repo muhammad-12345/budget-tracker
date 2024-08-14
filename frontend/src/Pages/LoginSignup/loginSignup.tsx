@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './loginSignup.css'
 import login_img from '../../assets/login_img.png'
 import signup_img from '../../assets/signup_img.png'
@@ -11,6 +11,10 @@ import { response } from 'express'
 
 
 const LoginSignup = () => {
+    useEffect(() => {
+        // Clear auth token from localStorage when the Login component is rendered
+        localStorage.removeItem('auth-token');
+    }, []);
     // 
     const [formData, setFormData] = useState({
         firstName: '',
@@ -31,33 +35,33 @@ const LoginSignup = () => {
         try {
             const formDataWithNumberBudget = {
                 ...formData,
-                budgetLimit: Number(formData.budgetLimit), 
+                budgetLimit: Number(formData.budgetLimit),
             };
-    
+
             const signupResponse = await signupAPI(formDataWithNumberBudget);
-    
+
             if (signupResponse.success) {
                 setMessage(signupResponse.data.message);
-    
+
                 // Automatically log in the user after successful signup
                 const loginResponse = await loginAPI({ email: formData.email, password: formData.password });
-    
+
                 if (loginResponse.success) {
                     localStorage.setItem('authToken', loginResponse.token); // Save the auth token
                     setMessage('Signup and login successful');
                     // Redirect or navigate to the dashboard or another protected route
                     window.location.replace("/expenses");
                 } else {
-                    alert(loginResponse.error); 
+                    alert(loginResponse.error);
                 }
             } else {
-                alert(signupResponse.error); 
+                alert(signupResponse.error);
             }
         } catch (error: any) {
-            alert(error.message || 'An unknown error occurred'); // Fallback error message
+            alert(error.message || 'An unknown error occurred'); 
         }
     };
-    
+
 
 
 
@@ -71,7 +75,6 @@ const LoginSignup = () => {
                 // After successful login, redirect to homepage
                 window.location.replace("/expenses");
             } else {
-                // Display error message creatively or with alert
                 alert(response.error);
             }
         } catch (error: any) {
