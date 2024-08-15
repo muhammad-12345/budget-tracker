@@ -30,26 +30,49 @@ const LoginSignup = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const validateEmail = (email: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+    
+    const validatePassword = (password: string) => {
+        return password.length >= 8 && password.length <= 14;
+    };
+    
     const handleSignupSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+    
+        if (!validateEmail(formData.email)) {
+            alert('Please enter a valid email address.');
+            return;
+        }
+    
+        if (!validatePassword(formData.password)) {
+            alert('Password must be between 8 and 14 characters.');
+            return;
+        }
+    
+        if (formData.password !== formData.confirmPassword) {
+            alert('Passwords do not match.');
+            return;
+        }
+    
         try {
             const formDataWithNumberBudget = {
                 ...formData,
                 budgetLimit: Number(formData.budgetLimit),
             };
-
+    
             const signupResponse = await signupAPI(formDataWithNumberBudget);
-
+    
             if (signupResponse.success) {
                 setMessage(signupResponse.data.message);
-
-                // Automatically log in the user after successful signup
+    
                 const loginResponse = await loginAPI({ email: formData.email, password: formData.password });
-
+    
                 if (loginResponse.success) {
-                    localStorage.setItem('authToken', loginResponse.token); // Save the auth token
+                    localStorage.setItem('authToken', loginResponse.token);
                     setMessage('Signup and login successful');
-                    // Redirect or navigate to the dashboard or another protected route
                     window.location.replace("/expenses");
                 } else {
                     alert(loginResponse.error);
@@ -58,21 +81,28 @@ const LoginSignup = () => {
                 alert(signupResponse.error);
             }
         } catch (error: any) {
-            alert(error.message || 'An unknown error occurred'); 
+            alert(error.message || 'An unknown error occurred');
         }
     };
-
-
-
-
+    
     const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+    
+        if (!validateEmail(formData.email)) {
+            alert('Please enter a valid email address.');
+            return;
+        }
+    
+        if (!validatePassword(formData.password)) {
+            alert('Password must be between 8 and 14 characters.');
+            return;
+        }
+    
         try {
             const response = await loginAPI({ email: formData.email, password: formData.password });
-
+    
             if (response.success) {
                 localStorage.setItem('auth-token', response.token);
-                // After successful login, redirect to homepage
                 window.location.replace("/expenses");
             } else {
                 alert(response.error);
@@ -81,8 +111,7 @@ const LoginSignup = () => {
             alert(error.message || 'An unknown error occurred');
         }
     };
-
-
+    
     // 
 
     const [passwordShown, setPasswordShown] = useState(false);
